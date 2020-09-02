@@ -3,5 +3,6 @@
     public interface IRealtimeClientConfig
     {
         public string HubUrl { get; }
+        public string? AccessToken { get; }
     }
 }
