@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blauhaus.Analytics.TestHelpers" Version="1.0.8" />
+    <PackageReference Include="Blauhaus.Ioc.TestHelpers" Version="1.1.1" />
+    <PackageReference Include="Blauhaus.Reactive.TestHelpers" Version="0.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Blauhaus.Realtime.Abstractions\Blauhaus.Realtime.Abstractions.csproj" />
   </ItemGroup>
 

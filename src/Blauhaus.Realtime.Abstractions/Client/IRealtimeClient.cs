@@ -2,15 +2,10 @@
 
 namespace Blauhaus.Realtime.Abstractions.Client
 {
-
-    public interface IRealtimeClient<TConfig> : IRealtimeClient
-        where TConfig : IRealtimeClientConfig
+     
+    public interface IRealtimeClient
     {
-
-    }
-
-    public interface IRealtimeClient 
-    {
-        IObservable<RealtimeClientState> Connect();
+        IObservable<RealtimeClientState> Observe();
+        IObservable<TEvent> Connect<TEvent>(string methodName);
     }
 }

@@ -9,19 +9,7 @@ namespace Blauhaus.Realtime.Client.SignalR.HubProxy
 {
     public class HubConnectionProxy : IHubConnectionProxy
     {
-        private readonly HubConnection _hub;
-
-        public HubConnectionProxy(
-            IRealtimeClientConfig config,
-            IAuthenticatedAccessToken accessToken)
-        {
-            
-
-            _hub.Reconnecting += OnReconnecting;
-            _hub.Reconnected += OnReconnected;
-            _hub.Closed += OnClosed;
-
-        }
+        private HubConnection _hub;
         
         public void Initialize(HubConnectionConfig config)
         {
@@ -36,6 +24,13 @@ namespace Blauhaus.Realtime.Client.SignalR.HubProxy
             {
                 builder.WithUrl(config.Url, options => options.AccessTokenProvider = () => Task.FromResult(config.AccessToken));
             }
+            
+            _hub = builder.Build();
+
+            _hub.Reconnecting += OnReconnecting;
+            _hub.Reconnected += OnReconnected;
+            _hub.Closed += OnClosed;
+
         }
 
         public Task StartAsync(CancellationToken token) => _hub.StartAsync(token);

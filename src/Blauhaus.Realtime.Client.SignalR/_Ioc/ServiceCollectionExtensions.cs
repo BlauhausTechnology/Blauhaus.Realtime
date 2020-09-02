@@ -12,9 +12,9 @@ namespace Blauhaus.Realtime.Client.SignalR._Ioc
         public static IServiceCollection AddRealtimeClient<TConfig>(this IServiceCollection services) 
             where TConfig : class, IRealtimeClientConfig
         {
-            services.AddTransient<TConfig>();
+            services.AddTransient<IRealtimeClientConfig, TConfig>();
             services.TryAddTransient<IHubConnectionProxy, HubConnectionProxy>();
-            services.AddSingleton<IRealtimeClient<TConfig>, RealtimeClient<TConfig>>();
+            services.AddSingleton<IRealtimeClient, SignalrRealtimeClient>();
 
             return services;
         }
