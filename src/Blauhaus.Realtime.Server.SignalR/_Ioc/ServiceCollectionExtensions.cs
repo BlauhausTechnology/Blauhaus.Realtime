@@ -1,5 +1,4 @@
 ﻿using Blauhaus.Domain.Abstractions.CommandHandlers;
-using Blauhaus.Realtime.Abstractions.Server;
 using Blauhaus.Realtime.Server.SignalR.CommandProcessor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -12,7 +11,7 @@ namespace Blauhaus.Realtime.Server.SignalR._Ioc
             where TCommand : notnull 
             where TCommandHandler : class, ICommandHandler<TPayload, TCommand>
         {
-            services.TryAddScoped<IRealtimeCommandProcessor, RealtimeCommandProcessor>();
+            services.TryAddScoped<ISignalrCommandProcessor, SignalrCommandProcessor>();
             services.TryAddScoped<ICommandHandler<TPayload, TCommand>, TCommandHandler>();
 
             return services;
@@ -24,7 +23,7 @@ namespace Blauhaus.Realtime.Server.SignalR._Ioc
             where TUser : notnull
         {
             
-            services.TryAddScoped<IRealtimeCommandProcessor, RealtimeCommandProcessor>();
+            services.TryAddScoped<ISignalrCommandProcessor, SignalrCommandProcessor>();
             services.TryAddScoped<IAuthenticatedCommandHandler<TPayload, TCommand, TUser>, TCommandHandler>();
 
             return services;

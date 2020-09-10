@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.Realtime.Abstractions.Client;
 using Blauhaus.Realtime.Client.SignalR.HubProxy;
-using Blauhaus.Realtime.Tests.SignalrRealtimeClientTests._Base;
+using Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests._Base;
 using Microsoft.AspNetCore.SignalR.Client;
 using NUnit.Framework;
 
-namespace Blauhaus.Realtime.Tests.SignalrRealtimeClientTests
+namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
 {
     public class ObserveTests : BaseSignalrRealtimeClientTest
     {

@@ -4,7 +4,7 @@ using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Ioc.TestHelpers;
 using Blauhaus.Realtime.Abstractions.Client;
 using Blauhaus.Realtime.Client.SignalR.HubProxy;
-using Blauhaus.Realtime.Tests.MockBuilders;
+using Blauhaus.Realtime.Tests._MockBuilders;
 using Blauhaus.TestHelpers.BaseTests;
 using Blauhaus.TestHelpers.MockBuilders;
 using NUnit.Framework;
@@ -23,11 +23,12 @@ namespace Blauhaus.Realtime.Tests._Base
             AddService(x => MockServiceLocator.Object);
 
             MockServiceLocator.Where_Resolve_returns(MockHubConnectionProxy.Object);
+
         }
 
         protected MockBuilder<IRealtimeClientConfig> MockClientConfig => AddMock<IRealtimeClientConfig>().Invoke();
         protected AnalyticsServiceMockBuilder MockAnalyticsService => AddMock<AnalyticsServiceMockBuilder, IAnalyticsService>().Invoke();
         protected ServiceLocatorMockBuilder MockServiceLocator => AddMock<ServiceLocatorMockBuilder, IServiceLocator>().Invoke();
-        protected HubConnectionProxyMockBuilder MockHubConnectionProxy => AddMock<HubConnectionProxyMockBuilder, IHubConnectionProxy>().Invoke();
+        protected SignalrServerConnectionProxyMockBuilder MockHubConnectionProxy => AddMock<SignalrServerConnectionProxyMockBuilder, ISignalrServerConnectionProxy>().Invoke();
     }
 }

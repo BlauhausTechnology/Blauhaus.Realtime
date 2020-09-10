@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Blauhaus.Auth.Abstractions.AccessToken;
 using Blauhaus.Realtime.Abstractions.Client;
-using Blauhaus.Realtime.Abstractions.Server;
+using Blauhaus.Realtime.Abstractions.Common;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Blauhaus.Realtime.Client.SignalR.HubProxy
 {
-    public class HubConnectionProxy : IHubConnectionProxy
+    public class SignalrServerConnectionProxy : ISignalrServerConnectionProxy
     {
         private HubConnection _hub;
         
@@ -37,14 +38,14 @@ namespace Blauhaus.Realtime.Client.SignalR.HubProxy
 
         public Task StartAsync(CancellationToken token) => _hub.StartAsync(token);
 
-        public Task<RealtimeApiResult<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter)
+        public Task<ApiResult<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter, Dictionary<string, string> properties)
         {
-            return _hub.InvokeAsync<RealtimeApiResult<TResponse>>(methodName, parameter);
+            return _hub.InvokeAsync<ApiResult<TResponse>>(methodName, parameter, properties);
         }
 
-        public Task<RealtimeApiResult> InvokeAsync(string methodName, object parameter)
+        public Task<ApiResult> InvokeAsync(string methodName, object parameter, Dictionary<string, string> properties)
         {
-            return _hub.InvokeAsync<RealtimeApiResult>(methodName, parameter);
+            return _hub.InvokeAsync<ApiResult>(methodName, parameter, properties);
         }
 
         public IDisposable On<T>(string methodName, Action<T> handler) => _hub.On(methodName, handler);

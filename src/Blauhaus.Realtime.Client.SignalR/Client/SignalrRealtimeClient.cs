@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
@@ -7,7 +8,7 @@ using Blauhaus.Analytics.Abstractions.Extensions;
 using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Realtime.Abstractions.Client;
-using Blauhaus.Realtime.Abstractions.Server;
+using Blauhaus.Realtime.Abstractions.Common;
 using Blauhaus.Realtime.Client.SignalR.Extensions;
 using Blauhaus.Realtime.Client.SignalR.HubProxy;
 using CSharpFunctionalExtensions;
@@ -20,7 +21,7 @@ namespace Blauhaus.Realtime.Client.SignalR.Client
         private readonly IRealtimeClientConfig _config;
         private readonly IAnalyticsService _analyticsService;
         private readonly IServiceLocator _serviceLocator;
-        private IHubConnectionProxy? _hub;
+        private ISignalrServerConnectionProxy? _hub;
 
         public SignalrRealtimeClient(
             IRealtimeClientConfig config,
@@ -86,24 +87,24 @@ namespace Blauhaus.Realtime.Client.SignalR.Client
             throw new NotImplementedException();
         }
 
-        public async Task<Result<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter)
+        public async Task<Result<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter, Dictionary<string, string> properties)
         {
             var hubResult = await GetHubAsync();
 
-            RealtimeApiResult<TResponse>? commandResult = await hubResult.InvokeAsync<TResponse>(methodName, parameter);
+            var commandResult = await hubResult.InvokeAsync<TResponse>(methodName, parameter, properties);
 
             if (commandResult.IsFailure) return Result.Failure<TResponse>(commandResult.Error);
 
             else return Result.Success(commandResult.Value);
         }
 
-        public Task<Result> InvokeAsync(string methodName, object parameter)
+        public Task<Result> InvokeAsync(string methodName, object parameter, Dictionary<string, string> properties)
         {
             throw new NotImplementedException();
         }
 
 
-        private async ValueTask<IHubConnectionProxy> GetHubAsync()
+        private async ValueTask<ISignalrServerConnectionProxy> GetHubAsync()
         {
             if (_hub == null)
             {
@@ -114,9 +115,9 @@ namespace Blauhaus.Realtime.Client.SignalR.Client
             return _hub;
         }
 
-        private async Task<IHubConnectionProxy> InitializeHubAsync()
+        private async Task<ISignalrServerConnectionProxy> InitializeHubAsync()
         {
-            var hub = _serviceLocator.Resolve<IHubConnectionProxy>();
+            var hub = _serviceLocator.Resolve<ISignalrServerConnectionProxy>();
             hub.Initialize(new HubConnectionConfig
             {
                 AccessToken = _config.AccessToken,

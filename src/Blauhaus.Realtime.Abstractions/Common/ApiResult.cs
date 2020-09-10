@@ -1,15 +1,17 @@
 ﻿using System;
 using CSharpFunctionalExtensions;
 
-namespace Blauhaus.Realtime.Abstractions.Server
+namespace Blauhaus.Realtime.Abstractions.Common
 {
-    public class RealtimeApiResult<T> : RealtimeApiResult, IResult<T>
+    public class ApiResult<T> : ApiResult, IResult<T>
     {
-        public RealtimeApiResult(Result result) : base(result)
+        public ApiResult() { }
+
+        public ApiResult(Result result) : base(result)
         {
         }
 
-        public RealtimeApiResult(Result<T> result) : base(result)
+        public ApiResult(Result<T> result) : base(result)
         {
             if (result.IsSuccess)
             {
@@ -17,7 +19,7 @@ namespace Blauhaus.Realtime.Abstractions.Server
             }
         }
 
-        public RealtimeApiResult(bool isSuccess, T value, string? error = null)  : base(isSuccess, error)
+        public ApiResult(bool isSuccess, T value, string? error = null)  : base(isSuccess, error)
         {
             Value = value;
         }
@@ -26,9 +28,11 @@ namespace Blauhaus.Realtime.Abstractions.Server
 
     }
 
-    public class RealtimeApiResult : IResult
+    public class ApiResult : IResult
     {
-        public RealtimeApiResult(bool isSuccess, string? error = null)
+        public ApiResult() { }
+
+        public ApiResult(bool isSuccess, string? error = null)
         {
             IsSuccess = isSuccess;
             IsFailure = !IsSuccess;
@@ -37,7 +41,7 @@ namespace Blauhaus.Realtime.Abstractions.Server
             if(IsFailure && error == null)
                 throw new ArgumentException("Failure results require an Error");
         }
-        public RealtimeApiResult(Result result)
+        public ApiResult(Result result)
         {
             IsSuccess = result.IsSuccess;
             IsFailure = result.IsFailure;

@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Blauhaus.Realtime.Abstractions.Server;
+using Blauhaus.Realtime.Abstractions.Common;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Blauhaus.Realtime.Client.SignalR.HubProxy
 {
-    public interface IHubConnectionProxy
+    public interface ISignalrServerConnectionProxy
     {
         void Initialize(HubConnectionConfig config);
 
@@ -18,8 +19,8 @@ namespace Blauhaus.Realtime.Client.SignalR.HubProxy
 
         Task StartAsync(CancellationToken token);
 
-        Task<RealtimeApiResult<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter);
-        Task<RealtimeApiResult> InvokeAsync(string methodName, object parameter);
+        Task<ApiResult<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter, Dictionary<string, string> properties);
+        Task<ApiResult> InvokeAsync(string methodName, object parameter, Dictionary<string, string> properties);
 
         Task StopAsync(CancellationToken token);
 

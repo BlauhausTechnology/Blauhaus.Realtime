@@ -13,7 +13,7 @@ namespace Blauhaus.Realtime.Client.SignalR._Ioc
             where TConfig : class, IRealtimeClientConfig
         {
             services.AddTransient<IRealtimeClientConfig, TConfig>();
-            services.TryAddTransient<IHubConnectionProxy, HubConnectionProxy>();
+            services.TryAddTransient<ISignalrServerConnectionProxy, SignalrServerConnectionProxy>();
             services.AddSingleton<IRealtimeClient, SignalrRealtimeClient>();
 
             return services;

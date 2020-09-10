@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Blauhaus.Realtime.Abstractions.Client;
 using Blauhaus.Realtime.Client.SignalR.Client;
 using Blauhaus.Realtime.Client.SignalR.HubProxy;
 using Blauhaus.Realtime.Tests._Base;
 using Moq;
 using NUnit.Framework;
 
-namespace Blauhaus.Realtime.Tests.SignalrRealtimeClientTests._Base
+namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests._Base
 {
     public abstract class BaseSignalrRealtimeClientTest : BaseRealtimeTest<SignalrRealtimeClient>
     {
@@ -35,7 +33,7 @@ namespace Blauhaus.Realtime.Tests.SignalrRealtimeClientTests._Base
 
         private void VerifyHubProxyInitialized()
         {
-            MockServiceLocator.Mock.Verify(x => x.Resolve<IHubConnectionProxy>(), Times.Once);
+            MockServiceLocator.Mock.Verify(x => x.Resolve<ISignalrServerConnectionProxy>(), Times.Once);
             MockHubConnectionProxy.Mock.Verify(x => x.Initialize(It.Is<HubConnectionConfig>(y => 
                 y.AccessToken == "accessToken" &&
                 y.Url == "http://www.google.com/chat")));

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -8,8 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Blauhaus.Auth.Abstractions" Version="0.9.3" />
-    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="0.12.2" />
+    <PackageReference Include="Blauhaus.Domain.Abstractions" Version="0.12.3" />
+    <PackageReference Include="Blauhaus.Ioc.Abstractions" Version="1.2.1" />
     <PackageReference Include="Blauhaus.Reactive.Abstractions" Version="0.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Server\" />
   </ItemGroup>
 
 </Project>
