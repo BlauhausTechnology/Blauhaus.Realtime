@@ -7,8 +7,10 @@ using Blauhaus.Analytics.Abstractions.Extensions;
 using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Realtime.Abstractions.Client;
+using Blauhaus.Realtime.Abstractions.Server;
 using Blauhaus.Realtime.Client.SignalR.Extensions;
 using Blauhaus.Realtime.Client.SignalR.HubProxy;
+using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Blauhaus.Realtime.Client.SignalR.Client
@@ -84,7 +86,22 @@ namespace Blauhaus.Realtime.Client.SignalR.Client
             throw new NotImplementedException();
         }
 
-        
+        public async Task<Result<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter)
+        {
+            var hubResult = await GetHubAsync();
+
+            RealtimeApiResult<TResponse>? commandResult = await hubResult.InvokeAsync<TResponse>(methodName, parameter);
+
+            if (commandResult.IsFailure) return Result.Failure<TResponse>(commandResult.Error);
+
+            else return Result.Success(commandResult.Value);
+        }
+
+        public Task<Result> InvokeAsync(string methodName, object parameter)
+        {
+            throw new NotImplementedException();
+        }
+
 
         private async ValueTask<IHubConnectionProxy> GetHubAsync()
         {

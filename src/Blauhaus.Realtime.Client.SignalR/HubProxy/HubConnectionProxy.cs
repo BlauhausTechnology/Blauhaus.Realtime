@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Blauhaus.Auth.Abstractions.AccessToken;
 using Blauhaus.Realtime.Abstractions.Client;
+using Blauhaus.Realtime.Abstractions.Server;
+using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Blauhaus.Realtime.Client.SignalR.HubProxy
@@ -34,6 +36,17 @@ namespace Blauhaus.Realtime.Client.SignalR.HubProxy
         }
 
         public Task StartAsync(CancellationToken token) => _hub.StartAsync(token);
+
+        public Task<RealtimeApiResult<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter)
+        {
+            return _hub.InvokeAsync<RealtimeApiResult<TResponse>>(methodName, parameter);
+        }
+
+        public Task<RealtimeApiResult> InvokeAsync(string methodName, object parameter)
+        {
+            return _hub.InvokeAsync<RealtimeApiResult>(methodName, parameter);
+        }
+
         public IDisposable On<T>(string methodName, Action<T> handler) => _hub.On(methodName, handler);
 
         public event EventHandler<HubStateChangeEventArgs>? StateChanged;
