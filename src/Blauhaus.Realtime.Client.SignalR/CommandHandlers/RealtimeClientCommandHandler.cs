@@ -18,32 +18,30 @@ namespace Blauhaus.Realtime.Client.SignalR.CommandHandlers
     {
         private readonly IAnalyticsService _analyticsService;
         private readonly IClientRepository<TModel, TDto> _clientRepository;
-        private readonly IRealtimeClient _realtimeClient;
+        private readonly IRealtimeClientFactory _clientFactory;
 
 
         public RealtimeClientCommandHandler(
             IAnalyticsService analyticsService,
             IClientRepository<TModel, TDto> clientRepository,
-            IRealtimeClient realtimeClient)
+            IRealtimeClientFactory clientFactory)
         {
             _analyticsService = analyticsService;
             _clientRepository = clientRepository;
-            _realtimeClient = realtimeClient;
+            _clientFactory = clientFactory;
         }
 
 
         public async Task<Result<TModel>> HandleAsync(TCommand command, CancellationToken token)
         {
-            using (var _ = _analyticsService.StartOperation(this, typeof(TCommand).Name))
-            {
+            //todo if TCommand is ICommandWithClientName then resolve named client
 
-                var properties = (Dictionary<string, string>)_analyticsService.AnalyticsOperationHeaders;
+            var client = _clientFactory.GetClient();
 
-                var result = await _realtimeClient.InvokeAsync<TDto>("HandleUserSessionUpdateCommandAsync",  command, properties);
+            var result = await client.Value.InvokeAsync<TDto>("HandleUserSessionUpdateCommandAsync",  command);
 
 
-                return Result.Failure<TModel>("oops");
-            }
+            return Result.Failure<TModel>("oops");
         }
     }
 }

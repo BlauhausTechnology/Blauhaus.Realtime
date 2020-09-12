@@ -9,7 +9,7 @@ using Blauhaus.Auth.TestHelpers.MockBuilders;
 using Blauhaus.Domain.TestHelpers.Extensions;
 using Blauhaus.Domain.TestHelpers.MockBuilders.Common.CommandHandlers;
 using Blauhaus.Realtime.Abstractions.Common;
-using Blauhaus.Realtime.Server.SignalR.Hubs;
+using Blauhaus.Realtime.Server.SignalR.ConnectionProxy;
 using Blauhaus.Realtime.Tests._TestObjects;
 using Blauhaus.Realtime.Tests.Server.SignalrCommandProcessorTests._Base;
 using CSharpFunctionalExtensions;

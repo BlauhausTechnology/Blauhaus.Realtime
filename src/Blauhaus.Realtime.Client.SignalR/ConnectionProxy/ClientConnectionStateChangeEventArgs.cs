@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Runtime.Serialization;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace Blauhaus.Realtime.Client.SignalR.HubProxy
+namespace Blauhaus.Realtime.Client.SignalR.ConnectionProxy
 {
-    public class HubStateChangeEventArgs : EventArgs
+    public class ClientConnectionStateChangeEventArgs : EventArgs
     {
-        public HubStateChangeEventArgs(HubConnectionState state, Exception? exception)
+        public ClientConnectionStateChangeEventArgs(HubConnectionState state, Exception? exception)
         {
             State = state;
             Exception = exception;

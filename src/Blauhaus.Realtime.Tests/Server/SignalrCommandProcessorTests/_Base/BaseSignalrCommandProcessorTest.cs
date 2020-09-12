@@ -9,7 +9,7 @@ using Blauhaus.Auth.TestHelpers.MockBuilders;
 using Blauhaus.Errors.Extensions;
 using Blauhaus.Realtime.Abstractions.Common;
 using Blauhaus.Realtime.Server.SignalR.CommandProcessor;
-using Blauhaus.Realtime.Server.SignalR.Hubs;
+using Blauhaus.Realtime.Server.SignalR.ConnectionProxy;
 using Blauhaus.Realtime.Tests._Base;
 using Blauhaus.Realtime.Tests._MockBuilders;
 using Blauhaus.Realtime.Tests._TestObjects;
@@ -25,7 +25,6 @@ namespace Blauhaus.Realtime.Tests.Server.SignalrCommandProcessorTests._Base
         protected Dictionary<string, string> Properties;
         protected SignalrClientConnectionProxyMockBuilder MockClientConnection;
         protected ISignalrClientConnectionProxy Connection => MockClientConnection.Object;
-        protected MockBuilder<IDisposable> MockScope;
 
         protected AuthenticatedUserFactoryMockBuilder MockAuthenticatedUserFactory => AddMock<AuthenticatedUserFactoryMockBuilder, IAuthenticatedUserFactory>().Invoke();
 
@@ -37,24 +36,12 @@ namespace Blauhaus.Realtime.Tests.Server.SignalrCommandProcessorTests._Base
             Properties = new Dictionary<string, string>();
             MockClientConnection = new SignalrClientConnectionProxyMockBuilder();
 
-            MockScope = new MockBuilder<IDisposable>();
-            MockServiceLocator.Mock.Setup(x => x.ResetScope()).Returns(MockScope.Object);
-            MockServiceLocator.Where_Resolve_returns(MockAnalyticsService.Object);
-            MockServiceLocator.Where_Resolve_returns(MockAuthenticatedUserFactory.Object);
+            AddService(MockAnalyticsService.Object);
+            AddService(MockAuthenticatedUserFactory.Object);
         }
-        
+         
         [Test]
-        public async Task SHOULD_Reset_and_dispose_service_scope()
-        {
-            //Act
-            await ExecuteAsync(Command, Properties, Connection);
-
-            //Assert
-            MockScope.Mock.Verify(x => x.Dispose());
-        }
-
-        [Test]
-        public async Task SHOULD_Start_and_dispose_request_operation()
+        public async Task SHOULD_Start_and_dispose_request_operation_and_trace_command()
         {
             //Arrange
             var analyticsOperation = new MockBuilder<IAnalyticsOperation>();
@@ -71,6 +58,8 @@ namespace Blauhaus.Realtime.Tests.Server.SignalrCommandProcessorTests._Base
             MockAnalyticsService.Mock.Verify(x => x.StartRequestOperation(Sut, It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>()));
             MockAnalyticsService.Mock.Verify(x => x.StartRequestOperation(It.IsAny<object>(), It.IsAny<string>(), It.Is<Dictionary<string, string>>(y => 
                 y["Prop"] == "prop"), It.IsAny<string>()));
+            MockAnalyticsService.VerifyTrace("TestCommand received");
+            MockAnalyticsService.VerifyTraceProperty("Command", Command);
         }
 
         [Test]

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.Realtime.Abstractions.Client;
-using Blauhaus.Realtime.Client.SignalR.HubProxy;
+using Blauhaus.Realtime.Client.SignalR.ConnectionProxy;
 using Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests._Base;
 using Microsoft.AspNetCore.SignalR.Client;
 using NUnit.Framework;
@@ -56,9 +56,9 @@ namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
                     tcs.SetResult(publishedStates);
                 }
             });
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Connecting, null));
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Connected, null));
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Disconnected, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Connecting, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Connected, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Disconnected, null));
             await tcs.Task;
 
             //Assert
@@ -77,10 +77,10 @@ namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
             {
                 publishedStates.Add(clientstate); 
             });
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Connecting, null));
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Connected, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Connecting, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Connected, null));
             subscription.Dispose();
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Disconnected, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Disconnected, null));
             await Task.Delay(20);
 
             //Assert
@@ -102,7 +102,7 @@ namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
                 statesTwo.Add(clientstate);
             });  
             subscriptionOne.Dispose();
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Disconnected, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Disconnected, null));
             await Task.Delay(20);
 
             //Assert
@@ -123,7 +123,7 @@ namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
                 publishedStates.Add(clientstate);
                 if(publishedStates.Count == 2) tcs.SetResult(publishedStates);
             });
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Reconnecting, new Exception("transient error")));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Reconnecting, new Exception("transient error")));
             await tcs.Task;
 
             //Assert 
@@ -144,7 +144,7 @@ namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
                 publishedStates.Add(clientstate);
                 if(publishedStates.Count == 2) tcs.SetResult(publishedStates);
             });
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Reconnecting, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Reconnecting, null));
             await tcs.Task;
 
             //Assert 
@@ -165,7 +165,7 @@ namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
                 publishedStates.Add(clientstate);
                 if(publishedStates.Count == 2) tcs.SetResult(publishedStates);
             });
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Disconnected, new Exception("fatal error")));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Disconnected, new Exception("fatal error")));
             await tcs.Task;
 
             //Assert 
@@ -187,7 +187,7 @@ namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
                 publishedStates.Add(clientstate);
                 if(publishedStates.Count == 2) tcs.SetResult(publishedStates);
             });
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Disconnected, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Disconnected, null));
             await tcs.Task;
 
             //Assert 
@@ -208,7 +208,7 @@ namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
                 publishedStates.Add(clientstate);
                 if(publishedStates.Count == 2) tcs.SetResult(publishedStates);
             });
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Connected, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Connected, null));
             await tcs.Task;
 
             //Assert 
@@ -229,7 +229,7 @@ namespace Blauhaus.Realtime.Tests.Client.SignalrRealtimeClientTests
                 publishedStates.Add(clientstate);
                 if(publishedStates.Count == 2) tcs.SetResult(publishedStates);
             });
-            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new HubStateChangeEventArgs(HubConnectionState.Connecting, null));
+            MockHubConnectionProxy.Mock.Raise(x => x.StateChanged += null!, new ClientConnectionStateChangeEventArgs(HubConnectionState.Connecting, null));
             await tcs.Task;
 
             //Assert 

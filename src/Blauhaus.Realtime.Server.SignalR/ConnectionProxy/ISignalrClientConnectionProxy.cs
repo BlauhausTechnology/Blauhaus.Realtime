@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Threading;
 using Microsoft.AspNetCore.Http.Features;
 
-namespace Blauhaus.Realtime.Server.SignalR.Hubs
+namespace Blauhaus.Realtime.Server.SignalR.ConnectionProxy
 {
     public interface ISignalrClientConnectionProxy
     {

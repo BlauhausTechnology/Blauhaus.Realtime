@@ -1,6 +1,6 @@
 ﻿using Blauhaus.Realtime.Abstractions.Client;
 using Blauhaus.Realtime.Client.SignalR.Client;
-using Blauhaus.Realtime.Client.SignalR.HubProxy;
+using Blauhaus.Realtime.Client.SignalR.ConnectionProxy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -9,12 +9,17 @@ namespace Blauhaus.Realtime.Client.SignalR._Ioc
     public static class ServiceCollectionExtensions
     {
          
-        public static IServiceCollection AddRealtimeClient<TConfig>(this IServiceCollection services) 
-            where TConfig : class, IRealtimeClientConfig
+        public static IServiceCollection AddSignalrClient(this IServiceCollection services)  
         {
-            services.AddTransient<IRealtimeClientConfig, TConfig>();
+            return services.AddSignalrClient<DummyClientDefinitions>();
+        }
+        public static IServiceCollection AddSignalrClient<TConfig>(this IServiceCollection services) 
+            where TConfig : class, IRealtimeClientDefinitions
+        {
+            services.AddTransient<IRealtimeClientDefinitions, TConfig>();
             services.TryAddTransient<ISignalrServerConnectionProxy, SignalrServerConnectionProxy>();
-            services.AddSingleton<IRealtimeClient, SignalrRealtimeClient>();
+            services.AddTransient<IRealtimeClient, SignalrClient>();
+            services.AddSingleton<IRealtimeClientFactory, SignalrClientFactory>();
 
             return services;
         }

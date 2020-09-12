@@ -1,4 +1,4 @@
-﻿using Blauhaus.Realtime.Client.SignalR.HubProxy;
+﻿using Blauhaus.Realtime.Client.SignalR.ConnectionProxy;
 using Blauhaus.TestHelpers.MockBuilders;
 
 namespace Blauhaus.Realtime.Tests._MockBuilders

@@ -9,30 +9,33 @@ using Blauhaus.Analytics.Abstractions.Service;
 using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Realtime.Abstractions.Client;
 using Blauhaus.Realtime.Abstractions.Common;
+using Blauhaus.Realtime.Client.SignalR.ConnectionProxy;
 using Blauhaus.Realtime.Client.SignalR.Extensions;
-using Blauhaus.Realtime.Client.SignalR.HubProxy;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Blauhaus.Realtime.Client.SignalR.Client
 {
-    public class SignalrRealtimeClient :  IRealtimeClient
+    public class SignalrClient :  IRealtimeClient
     {
-        private readonly IRealtimeClientConfig _config;
+        private IRealtimeClientConfig _config;
         private readonly IAnalyticsService _analyticsService;
         private readonly IServiceLocator _serviceLocator;
         private ISignalrServerConnectionProxy? _hub;
 
-        public SignalrRealtimeClient(
-            IRealtimeClientConfig config,
+        public SignalrClient(
             IAnalyticsService analyticsService,
             IServiceLocator serviceLocator)
         {
-            _config = config;
             _analyticsService = analyticsService;
             _serviceLocator = serviceLocator;
         }
 
+
+        public void Configure(IRealtimeClientConfig config)
+        {
+            _config = config;
+        }
 
         public IObservable<RealtimeClientState> Observe()
         {
@@ -43,7 +46,7 @@ namespace Blauhaus.Realtime.Client.SignalR.Client
                 var hub = await GetHubAsync();
                 observer.OnNext(hub.CurrentState.ToRealtimeClientState());
 
-                void OnHubStateChanged(object sender, HubStateChangeEventArgs eventArgs)
+                void OnHubStateChanged(object sender, ClientConnectionStateChangeEventArgs eventArgs)
                 {
 
                     var clientState = eventArgs.State.ToRealtimeClientState();
@@ -77,7 +80,6 @@ namespace Blauhaus.Realtime.Client.SignalR.Client
                     x => hub.StateChanged += OnHubStateChanged, 
                     x => hub.StateChanged -= OnHubStateChanged).Subscribe());
 
-
                 return subscriptions;
             });
         }
@@ -87,18 +89,18 @@ namespace Blauhaus.Realtime.Client.SignalR.Client
             throw new NotImplementedException();
         }
 
-        public async Task<Result<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter, Dictionary<string, string> properties)
+        public async Task<Result<TResponse>> InvokeAsync<TResponse>(string methodName, object parameter)
         {
             var hubResult = await GetHubAsync();
 
-            var commandResult = await hubResult.InvokeAsync<TResponse>(methodName, parameter, properties);
+            var commandResult = await hubResult.InvokeAsync<TResponse>(methodName, parameter, _analyticsService.AnalyticsOperationHeaders);
 
             if (commandResult.IsFailure) return Result.Failure<TResponse>(commandResult.Error);
 
             else return Result.Success(commandResult.Value);
         }
 
-        public Task<Result> InvokeAsync(string methodName, object parameter, Dictionary<string, string> properties)
+        public Task<Result> InvokeAsync(string methodName, object parameter)
         {
             throw new NotImplementedException();
         }
@@ -108,25 +110,18 @@ namespace Blauhaus.Realtime.Client.SignalR.Client
         {
             if (_hub == null)
             {
-                _hub = await InitializeHubAsync();
-                _analyticsService.TraceVerbose(this, "SignalR client hub initialized for the first time", _config.HubUrl.ToObjectDictionary("Url"));
+                var hub = _serviceLocator.Resolve<ISignalrServerConnectionProxy>();
+                hub.Configure(_config);
+
+                await hub.StartAsync(CancellationToken.None);
+                _analyticsService.TraceVerbose(this, "SignalR client hub initialized for the first time", _config.Url.ToObjectDictionary("Url"));
+                
+                _hub = hub;
             }
 
             return _hub;
         }
-
-        private async Task<ISignalrServerConnectionProxy> InitializeHubAsync()
-        {
-            var hub = _serviceLocator.Resolve<ISignalrServerConnectionProxy>();
-            hub.Initialize(new HubConnectionConfig
-            {
-                AccessToken = _config.AccessToken,
-                Url = _config.HubUrl
-            });
-
-            await hub.StartAsync(CancellationToken.None);
-            return hub;
-        }
+         
 
     }
 }

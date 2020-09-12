@@ -3,7 +3,7 @@ using Blauhaus.Analytics.TestHelpers.MockBuilders;
 using Blauhaus.Ioc.Abstractions;
 using Blauhaus.Ioc.TestHelpers;
 using Blauhaus.Realtime.Abstractions.Client;
-using Blauhaus.Realtime.Client.SignalR.HubProxy;
+using Blauhaus.Realtime.Client.SignalR.ConnectionProxy;
 using Blauhaus.Realtime.Tests._MockBuilders;
 using Blauhaus.TestHelpers.BaseTests;
 using Blauhaus.TestHelpers.MockBuilders;

@@ -2,7 +2,7 @@
 {
     public interface IRealtimeClientConfig
     {
-        public string HubUrl { get; }
-        public string? AccessToken { get; }
+        public string Url { get; set; }
+        public string? AccessToken { get; set; }
     }
 }
